@@ -7,11 +7,11 @@
 # Can be overridden with specific arguments.
 # See the end of this file for more description.
 ABIS_TO_BUILD=()
-API_LEVEL=19
+API_LEVEL=16
 SOURCE_TYPE=TAR
-SOURCE_VALUE=5.0
-EXTERNAL_LIBRARIES=()
-FFMPEG_GPL_ENABLED=false
+SOURCE_VALUE=4.4.1
+EXTERNAL_LIBRARIES=("libxml2" "libfreetype" "libfontconfig" "libfribidi" "libfdk-aac" "libx264")
+FFMPEG_GPL_ENABLED=true
 
 # All FREE libraries that are supported
 SUPPORTED_LIBRARIES_FREE=(
@@ -23,8 +23,11 @@ SUPPORTED_LIBRARIES_FREE=(
   "libspeex"
   "libvpx"
   "libwebp"
+  "libxml2"
   "libfreetype"
+  "libfontconfig"
   "libfribidi"
+  "libfdk-aac"
 )
 
 # All GPL libraries that are supported
@@ -101,11 +104,20 @@ for argument in "$@"; do
   --enable-libvpx | -vpx)
     EXTERNAL_LIBRARIES+=("libvpx")
     ;;
+  --enable-libxml2 | -libxml2)
+    EXTERNAL_LIBRARIES+=("libxml2")
+    ;;
   --enable-libfreetype | -freetype)
     EXTERNAL_LIBRARIES+=("libfreetype")
     ;;
+  --enable-libfontconfig | -fontconfig)
+    EXTERNAL_LIBRARIES+=("libfontconfig")
+    ;;
   --enable-libfribidi | -fribidi)
     EXTERNAL_LIBRARIES+=("libfribidi")
+    ;;
+  --enable-libfdk-aac | -fdk-aac)
+    EXTERNAL_LIBRARIES+=("libfdk-aac")
     ;;
   --enable-libx264 | -x264)
     EXTERNAL_LIBRARIES+=("libx264")

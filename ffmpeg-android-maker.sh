@@ -76,7 +76,18 @@ COMPONENTS_TO_BUILD+=( "ffmpeg" )
 for COMPONENT in ${COMPONENTS_TO_BUILD[@]}
 do
   echo "Getting source code of the component: ${COMPONENT}"
-  SOURCE_DIR_FOR_COMPONENT=${SOURCES_DIR}/${COMPONENT}
+  
+  if [ ${COMPONENT} = "libfdk-aac" ]; 
+  then
+       COMPONENT="libfdk_aac"
+       echo "$COMPONENT  ------>83"
+       echo "COMPONENT_SOURCES_DIR_VARIABLE=SOURCES_DIR_${COMPONENT} ----->84"
+       SOURCE_DIR_FOR_COMPONENT=${SOURCES_DIR}/${COMPONENT}
+  else
+       echo "$COMPONENT  ------>87"
+       echo "COMPONENT_SOURCES_DIR_VARIABLE=SOURCES_DIR_${COMPONENT} ----->88"
+       SOURCE_DIR_FOR_COMPONENT=${SOURCES_DIR}/${COMPONENT}
+  fi
 
   mkdir -p ${SOURCE_DIR_FOR_COMPONENT}
   cd ${SOURCE_DIR_FOR_COMPONENT}
@@ -88,8 +99,23 @@ do
   # with actual path of the source code. This is done for possiblity to switch
   # between different verions of a component.
   # If it isn't set, consider SOURCE_DIR_FOR_COMPONENT as the proper value
-  COMPONENT_SOURCES_DIR_VARIABLE=SOURCES_DIR_${COMPONENT}
+  echo "$COMPONENT  ------>92"
+  if [ ${COMPONENT} = "libfdk-aac" ]; 
+  then
+       COMPONENT="libfdk_aac"
+       echo "$COMPONENT  ------>93"
+       echo "COMPONENT_SOURCES_DIR_VARIABLE=SOURCES_DIR_${COMPONENT} ----->94"
+       COMPONENT_SOURCES_DIR_VARIABLE=SOURCES_DIR_${COMPONENT}
+  else
+       echo "$COMPONENT  ------>97"
+       echo "COMPONENT_SOURCES_DIR_VARIABLE=SOURCES_DIR_${COMPONENT} ----->98"
+       COMPONENT_SOURCES_DIR_VARIABLE=SOURCES_DIR_${COMPONENT}
+  fi
+     
+
   if [[ -z "${!COMPONENT_SOURCES_DIR_VARIABLE}" ]]; then
+     echo "执行到ffmpeg-android-maker.sh --------> 102行"
+     echo "SOURCES_DIR_${COMPONENT}=${SOURCE_DIR_FOR_COMPONENT}"
      export SOURCES_DIR_${COMPONENT}=${SOURCE_DIR_FOR_COMPONENT}
   fi
 
@@ -106,12 +132,23 @@ do
   for COMPONENT in ${COMPONENTS_TO_BUILD[@]}
   do
     echo "Building the component: ${COMPONENT}"
-    COMPONENT_SOURCES_DIR_VARIABLE=SOURCES_DIR_${COMPONENT}
+
+    if [ ${COMPONENT} = "libfdk-aac" ]
+    then
+        COMPONENT="libfdk_aac"
+        echo " COMPONENT_SOURCES_DIR_VARIABLE=SOURCES_DIR_${COMPONENT} --->132"
+        COMPONENT_SOURCES_DIR_VARIABLE=SOURCES_DIR_${COMPONENT}
+    else
+        echo " COMPONENT_SOURCES_DIR_VARIABLE=SOURCES_DIR_${COMPONENT} --->133"
+        COMPONENT_SOURCES_DIR_VARIABLE=SOURCES_DIR_${COMPONENT}
+    fi
 
     # Going to the actual source code directory of the current component
+    echo " ${!COMPONENT_SOURCES_DIR_VARIABLE} --->134"
     cd ${!COMPONENT_SOURCES_DIR_VARIABLE}
-
+    echo $(pwd)
     # and executing the component-specific build script
+    echo "路径 ==  ${SCRIPTS_DIR}/${COMPONENT}/build.sh"
     source ${SCRIPTS_DIR}/${COMPONENT}/build.sh || exit 1
 
     # Returning to the root directory. Just in case.

@@ -25,6 +25,32 @@ done
 DEP_CFLAGS="-I${BUILD_DIR_EXTERNAL}/${ANDROID_ABI}/include"
 DEP_LD_FLAGS="-L${BUILD_DIR_EXTERNAL}/${ANDROID_ABI}/lib $FFMPEG_EXTRA_LD_FLAGS"
 
+cmd="--prefix=${BUILD_DIR_FFMPEG}/${ANDROID_ABI} \
+  --enable-cross-compile \
+  --target-os=android \
+  --arch=${TARGET_TRIPLE_MACHINE_ARCH} \
+  --sysroot=${SYSROOT_PATH} \
+  --cc=${FAM_CC} \
+  --cxx=${FAM_CXX} \
+  --ld=${FAM_LD} \
+  --ar=${FAM_AR} \
+  --as=${FAM_CC} \
+  --nm=${FAM_NM} \
+  --ranlib=${FAM_RANLIB} \
+  --strip=${FAM_STRIP} \
+  --enable-filter=drawtext \
+  --enable-avfilter \
+  --enable-postproc \
+  --extra-cflags=$DEP_CFLAGS \
+  --extra-ldflags=$DEP_LD_FLAGS \
+  --enable-shared \
+  --disable-static \
+  --pkg-config=${PKG_CONFIG_EXECUTABLE} \
+  ${EXTRA_BUILD_CONFIGURATION_FLAGS} \
+  $ADDITIONAL_COMPONENTS"
+
+echo $cmd  
+
 ./configure \
   --prefix=${BUILD_DIR_FFMPEG}/${ANDROID_ABI} \
   --enable-cross-compile \
@@ -39,13 +65,28 @@ DEP_LD_FLAGS="-L${BUILD_DIR_EXTERNAL}/${ANDROID_ABI}/lib $FFMPEG_EXTRA_LD_FLAGS"
   --nm=${FAM_NM} \
   --ranlib=${FAM_RANLIB} \
   --strip=${FAM_STRIP} \
+  --enable-filter=drawtext \
+  --enable-avfilter \
+  --enable-postproc \
+  --enable-nonfree \
   --extra-cflags="-O3 -fPIC $DEP_CFLAGS" \
   --extra-ldflags="$DEP_LD_FLAGS" \
   --enable-shared \
   --disable-static \
   --pkg-config=${PKG_CONFIG_EXECUTABLE} \
   ${EXTRA_BUILD_CONFIGURATION_FLAGS} \
-  $ADDITIONAL_COMPONENTS || exit 1
+  $ADDITIONAL_COMPONENTS \
+  --enable-jni \
+  --enable-mediacodec \
+  --enable-decoder=h264_mediacodec \
+  --enable-hwaccel=h264_mediacodec \
+  --enable-encoder=libx264 \
+  --enable-encoder=libfdk-aac \
+  --enable-muxers \
+  --enable-decoders \
+  --enable-demuxers \
+  --enable-parsers \
+  --enable-protocols || exit 1
 
 ${MAKE_EXECUTABLE} clean
 ${MAKE_EXECUTABLE} -j${HOST_NPROC}
